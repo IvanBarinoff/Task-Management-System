@@ -7,6 +7,8 @@ import barinov.task.management.system.models.Person;
 import barinov.task.management.system.security.JWTUtil;
 import barinov.task.management.system.services.RegistrationService;
 import barinov.task.management.system.util.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name="Authentication Controller", description="Контроллер для регистрации и аутенфикации пользователей.")
 public class AuthController {
 
     private final PersonDTOValidator personValidator;
@@ -41,6 +44,10 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
     }
 
+    @Operation(
+            summary = "Регистрация пользователя",
+            description = "Позволяет зарегистрировать пользователя"
+    )
     @PostMapping("/registration")
     public Map<String, String> performRegistration(@RequestBody @Valid PersonDTO personDTO,
                                       BindingResult bindingResult) {
@@ -70,6 +77,10 @@ public class AuthController {
         return Map.of("jwt-token", token);
     }
 
+    @Operation(
+            summary = "Аутенфикация пользователя",
+            description = "Позволяет пользователю получить токен при праильном вводе почты и пароля"
+    )
     @PostMapping("/login")
     public Map<String, String> performLogin(@RequestBody PersonDTO personDTO) {
         UsernamePasswordAuthenticationToken authToken =

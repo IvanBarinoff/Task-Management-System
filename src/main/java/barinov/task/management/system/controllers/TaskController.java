@@ -11,6 +11,9 @@ import barinov.task.management.system.security.PersonDetails;
 import barinov.task.management.system.services.TaskService;
 import barinov.task.management.system.util.*;
 import com.github.fge.jsonpatch.JsonPatch;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +30,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/task")
+@SecurityRequirement(name = "JWT")
+@Tag(name="Task Controller", description="Контроллер для управления задачами.")
 public class TaskController {
 
     private final TaskService taskService;
@@ -44,6 +49,10 @@ public class TaskController {
         this.converterComment = converterComment;
     }
 
+    @Operation(
+            summary = "Создать задачу",
+            description = "Позволяет создать новою задачу"
+    )
     @PostMapping("/new")
     public Map<String, Integer> createTask(@RequestBody TaskDTO taskDTO,
                                           BindingResult bindingResult) {
@@ -59,6 +68,10 @@ public class TaskController {
         return Map.of("task id", taskId);
     }
 
+    @Operation(
+            summary = "Изменить задачу",
+            description = "Позволяет изменить задачу по её id. Доступно только автору задачи."
+    )
     @PatchMapping("/{taskId}")
     public void editTask(@PathVariable("taskId") int id,
                          @RequestBody JsonPatch jsonPatch,
@@ -68,17 +81,29 @@ public class TaskController {
         taskService.editTaskById(jsonPatch, id, principal, bindingResult, taskDTOValidator);
     }
 
+    @Operation(
+            summary = "Увидеть задачу",
+            description = "Позволяет увидеть задачу по её id"
+    )
     @GetMapping("/{taskId}")
     public ShowTaskDTO showTask(@PathVariable("taskId") int id) {
         return converterTask.convertToShowTaskDTO(taskService.getTask(id));
     }
 
+    @Operation(
+            summary = "Удалить задачу",
+            description = "Позволяет удалить задачу по её id. Доступно только автору задачи"
+    )
     @DeleteMapping("/{taskId}")
     public void deleteTask(@PathVariable("taskId") int id,
                            Principal principal) {
         taskService.deleteTask(id, principal);
     }
 
+    @Operation(
+            summary = "Изменить статус",
+            description = "Позволяет изменить статус задачи по её id. Доступно автору и исполнителю задачи"
+    )
     @PatchMapping("/status/{taskId}")
     public void changeStatus(@PathVariable("taskId") int id,
                              @RequestBody String status,
@@ -92,6 +117,10 @@ public class TaskController {
         taskService.changeStatus(id, Status.valueOf(status), principal);
     }
 
+    @Operation(
+            summary = "Назначить исполнителя",
+            description = "Позволяет назначить исполнителя по его id задаче по её id. Доступно только автору задачи"
+    )
     @PatchMapping("/executor/{taskId}")
     public void setExecutor(@PathVariable("taskId") int id,
                             @RequestBody int executorId,
@@ -100,6 +129,10 @@ public class TaskController {
         taskService.setExecutor(id, executorId, principal);
     }
 
+    @Operation(
+            summary = "Оставить комментарий",
+            description = "Позволяет оставить комментарий к задаче по её id"
+    )
     @PostMapping("/comment/{taskId}")
     public void addComment(@PathVariable("taskId") int id,
                            @RequestBody @Valid CommentDTO commentDTO) {
@@ -109,6 +142,12 @@ public class TaskController {
         taskService.addComment(id, comment);
     }
 
+    @Operation(
+            summary = "Получить отфильтрованный список задач",
+            description = "Позваляеет полусить отфильтрованный список задач. " +
+                    "Фильтрация осуществляется по id исполнителя, id автора, приоритету и статусу задачи." +
+                    "Задачи показываются постранично. Можно установить номер и размер страниц."
+    )
     @GetMapping
     public List<ShowTaskDTO> getTaskByFilters(@RequestParam(value = "executorId", required = false) Integer executorId,
                                           @RequestParam(value = "authorId", required = false) Integer authorId,

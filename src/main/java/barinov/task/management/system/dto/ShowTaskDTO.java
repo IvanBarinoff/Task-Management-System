@@ -1,7 +1,10 @@
 package barinov.task.management.system.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.util.List;
 
+@Schema(description = "Dto для показа задачи")
 public class ShowTaskDTO {
 
     private Integer id;

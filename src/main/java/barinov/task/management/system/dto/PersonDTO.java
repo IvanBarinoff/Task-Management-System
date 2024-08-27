@@ -1,9 +1,11 @@
 package barinov.task.management.system.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+@Schema(description = "Dto для пользователя")
 public class PersonDTO {
 
     @Email(message = "Некорректная почта")
