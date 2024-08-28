@@ -6,7 +6,7 @@ services:
       myapp-mysql:
         condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://myapp-mysql:3306/test_task
+      - SPRING_DATASOURCE_URL=jdbc:mysql://myapp-mysql:3306/task_management_system
       - SPRING_DATASOURCE_USERNAME=mysql
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
@@ -17,7 +17,7 @@ services:
     image: mysql:8
     container_name: mySql_container
     environment:
-      - MYSQL_DATABASE=test_task
+      - MYSQL_DATABASE=task_management_system
       - MYSQL_USER=mysql
       - MYSQL_PASSWORD=root
       - MYSQL_ROOT_PASSWORD=root

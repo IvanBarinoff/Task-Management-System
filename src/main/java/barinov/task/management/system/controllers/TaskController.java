@@ -12,6 +12,7 @@ import barinov.task.management.system.services.TaskService;
 import barinov.task.management.system.util.*;
 import com.github.fge.jsonpatch.JsonPatch;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -75,7 +76,7 @@ public class TaskController {
     @PatchMapping("/{taskId}")
     public void editTask(@PathVariable("taskId") int id,
                          @RequestBody JsonPatch jsonPatch,
-                         TaskDTO taskDTO, BindingResult bindingResult,
+                         @Parameter(hidden = true) TaskDTO taskDTO, BindingResult bindingResult,
                          Principal principal) {
 
         taskService.editTaskById(jsonPatch, id, principal, bindingResult, taskDTOValidator);
