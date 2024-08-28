@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: barinov
+      changes:
+        - sqlFile:
+            dbms: mysql
+            path: v1/v1_create_table.sql
+            relativeToChangelogFile: true
