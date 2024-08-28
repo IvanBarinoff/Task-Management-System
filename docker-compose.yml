@@ -1,24 +1,27 @@
 services:
-  myapp-mysql:
-    image: mysql/mysql-server:8.0
-    container_name: mySql_container
-    environment:
-      - MYSQL_DATABASE=test_task
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=root
-      - MYSQL_ROOT_PASSWORD=root
-    ports:
-      - 3306:3306
-
   task-management-system:
     image: tms-image
     build: .
     depends_on:
-      - myapp-mysql
-    ports:
-      - 8080:8080
+      myapp-mysql:
+        condition: service_healthy
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/test_task
-      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_URL=jdbc:mysql://myapp-mysql:3306/test_task
+      - SPRING_DATASOURCE_USERNAME=mysql
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_DRIVER_CLASS_NAME=com.mysql.cj.jdbc.Driver
+    ports:
+      - 8080:8080
+
+  myapp-mysql:
+    image: mysql:8
+    container_name: mySql_container
+    environment:
+      - MYSQL_DATABASE=test_task
+      - MYSQL_USER=mysql
+      - MYSQL_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=root
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: "exit 0"
