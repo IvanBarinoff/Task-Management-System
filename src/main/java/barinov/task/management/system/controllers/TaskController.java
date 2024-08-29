@@ -54,7 +54,7 @@ public class TaskController {
             summary = "Создать задачу",
             description = "Позволяет создать новою задачу"
     )
-    @PostMapping("/new")
+    @PostMapping
     public Map<String, Integer> createTask(@RequestBody TaskDTO taskDTO,
                                           BindingResult bindingResult) {
 
@@ -66,7 +66,7 @@ public class TaskController {
 
         Integer taskId = taskService.saveTaskAndGetId(converterTask.convertToTask(taskDTO), authorDetails.getPerson());
 
-        return Map.of("task id", taskId);
+        return Map.of("taskId", taskId);
     }
 
     @Operation(

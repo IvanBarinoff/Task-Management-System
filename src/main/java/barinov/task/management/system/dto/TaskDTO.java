@@ -13,6 +13,16 @@ public class TaskDTO {
 
     private int executorId;
 
+    public TaskDTO(String description, String status, String priority, int executorId) {
+        this.description = description;
+        this.status = status;
+        this.priority = priority;
+        this.executorId = executorId;
+    }
+
+    public TaskDTO() {
+    }
+
     public String getDescription() {
         return description;
     }
