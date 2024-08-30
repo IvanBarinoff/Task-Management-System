@@ -16,7 +16,8 @@ create table if not exists task
     author_id   int           not null,
     executor_id int           null,
     constraint author_id
-        foreign key (author_id) references person (id),
+        foreign key (author_id) references person (id)
+            on update cascade on delete cascade,
     constraint executor_id
         foreign key (executor_id) references person (id)
 );
