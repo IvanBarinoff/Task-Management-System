@@ -67,7 +67,7 @@ public class TaskControllerTest {
                         .with(user(personDetails))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(taskDTO)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.taskId").exists())
                 .andReturn();
     }
@@ -82,7 +82,7 @@ public class TaskControllerTest {
                         .with(user(personDetails))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(taskDTO)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.taskId").exists())
                 .andReturn();
 
@@ -94,7 +94,7 @@ public class TaskControllerTest {
                         .with(user(personDetails))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("[{ \"op\": \"replace\", \"path\": \"/description\", \"value\": \"Изменение\" }]"))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         mockMvc.perform(get("/task/{id}", taskId))
                 .andExpect(status().isOk())
@@ -111,7 +111,7 @@ public class TaskControllerTest {
                         .with(user(personDetails))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(taskDTO)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.taskId").exists())
                 .andReturn();
 
@@ -133,7 +133,7 @@ public class TaskControllerTest {
                         .with(user(personDetails))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(taskDTO)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.taskId").exists())
                 .andReturn();
 
@@ -143,7 +143,7 @@ public class TaskControllerTest {
 
         mockMvc.perform(delete("/task/{id}", taskId)
                         .with(user(personDetails)))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
     }
 
     @Test
@@ -156,7 +156,7 @@ public class TaskControllerTest {
                         .with(user(personDetails))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(taskDTO)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.taskId").exists())
                 .andReturn();
 
@@ -168,7 +168,7 @@ public class TaskControllerTest {
                         .with(user(personDetails))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(Status.PROGRESS.toString()))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         mockMvc.perform(get("/task/{id}", taskId))
                 .andExpect(status().isOk())
@@ -185,7 +185,7 @@ public class TaskControllerTest {
                         .with(user(personDetails))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(taskDTO)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.taskId").exists())
                 .andReturn();
 
@@ -200,7 +200,7 @@ public class TaskControllerTest {
                         .with(user(personDetails))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(commentDTO)))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         mockMvc.perform(get("/task/{id}", taskId))
                 .andExpect(status().isOk())
@@ -217,13 +217,12 @@ public class TaskControllerTest {
                         .with(user(personDetails))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(taskDTO)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.taskId").exists())
                 .andReturn();
 
         mockMvc.perform(get("/task?authorId={authorId}&priority={priority}&status={status}",
-                        personDetails.getPerson().getId(), taskDTO.getPriority(), taskDTO.getStatus())
-                        .with(user(personDetails)))
+                        personDetails.getPerson().getId(), taskDTO.getPriority(), taskDTO.getStatus()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[:1].id").exists());
     }

@@ -54,6 +54,7 @@ public class TaskController {
             summary = "Создать задачу",
             description = "Позволяет создать новою задачу"
     )
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public Map<String, Integer> createTask(@RequestBody TaskDTO taskDTO,
                                           BindingResult bindingResult) {
@@ -73,6 +74,7 @@ public class TaskController {
             summary = "Изменить задачу",
             description = "Позволяет изменить задачу по её id. Доступно только автору задачи."
     )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/{taskId}")
     public void editTask(@PathVariable("taskId") int id,
                          @RequestBody JsonPatch jsonPatch,
@@ -95,6 +97,7 @@ public class TaskController {
             summary = "Удалить задачу",
             description = "Позволяет удалить задачу по её id. Доступно только автору задачи"
     )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{taskId}")
     public void deleteTask(@PathVariable("taskId") int id,
                            Principal principal) {
@@ -105,6 +108,7 @@ public class TaskController {
             summary = "Изменить статус",
             description = "Позволяет изменить статус задачи по её id. Доступно автору и исполнителю задачи"
     )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/status/{taskId}")
     public void changeStatus(@PathVariable("taskId") int id,
                              @RequestBody String status,
@@ -122,6 +126,7 @@ public class TaskController {
             summary = "Назначить исполнителя",
             description = "Позволяет назначить исполнителя по его id задаче по её id. Доступно только автору задачи"
     )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/executor/{taskId}")
     public void setExecutor(@PathVariable("taskId") int id,
                             @RequestBody int executorId,
@@ -134,6 +139,7 @@ public class TaskController {
             summary = "Оставить комментарий",
             description = "Позволяет оставить комментарий к задаче по её id"
     )
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/comment/{taskId}")
     public void addComment(@PathVariable("taskId") int id,
                            @RequestBody @Valid CommentDTO commentDTO) {
