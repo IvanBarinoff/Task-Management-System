@@ -104,6 +104,30 @@ public class TaskControllerTest {
     @Test
     @DirtiesContext
     @WithMockUser(username = "testTaskController2@gmail.com")
+    public void editTaskByNotAuthorTest() throws Exception {
+        TaskDTO taskDTO = new TaskDTO("Test task 1", Status.WAITING.toString(), Priority.LOW.toString(), 0);
+
+        MvcResult mvcResult = mockMvc.perform(post("/task")
+                        .with(user(personDetails))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(taskDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.taskId").exists())
+                .andReturn();
+
+        int taskId = objectMapper.readTree(mvcResult.getResponse().getContentAsString())
+                .get("taskId")
+                .asInt();
+
+        mockMvc.perform(patch("/task/{id}", taskId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("[{ \"op\": \"replace\", \"path\": \"/description\", \"value\": \"Изменение\" }]"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser(username = "testTaskController2@gmail.com")
     public void showTaskTest() throws Exception {
         TaskDTO taskDTO = new TaskDTO("Test task 1", Status.WAITING.toString(), Priority.LOW.toString(), 0);
 
@@ -149,6 +173,28 @@ public class TaskControllerTest {
     @Test
     @DirtiesContext
     @WithMockUser(username = "testTaskController2@gmail.com")
+    public void deleteTaskByNotAuthorTest() throws Exception {
+        TaskDTO taskDTO = new TaskDTO("Test task 1", Status.WAITING.toString(), Priority.LOW.toString(), 0);
+
+        MvcResult mvcResult = mockMvc.perform(post("/task")
+                        .with(user(personDetails))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(taskDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.taskId").exists())
+                .andReturn();
+
+        int taskId = objectMapper.readTree(mvcResult.getResponse().getContentAsString())
+                .get("taskId")
+                .asInt();
+
+        mockMvc.perform(delete("/task/{id}", taskId))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser(username = "testTaskController2@gmail.com")
     public void changeStatusTest() throws Exception {
         TaskDTO taskDTO = new TaskDTO("Test task 1", Status.WAITING.toString(), Priority.LOW.toString(), 0);
 
@@ -173,6 +219,30 @@ public class TaskControllerTest {
         mockMvc.perform(get("/task/{id}", taskId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(Status.PROGRESS.toString()));
+    }
+
+    @Test
+    @DirtiesContext
+    @WithMockUser(username = "testTaskController2@gmail.com")
+    public void changeStatusByNotAuthorTest() throws Exception {
+        TaskDTO taskDTO = new TaskDTO("Test task 1", Status.WAITING.toString(), Priority.LOW.toString(), 0);
+
+        MvcResult mvcResult = mockMvc.perform(post("/task")
+                        .with(user(personDetails))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(taskDTO)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.taskId").exists())
+                .andReturn();
+
+        int taskId = objectMapper.readTree(mvcResult.getResponse().getContentAsString())
+                .get("taskId")
+                .asInt();
+
+        mockMvc.perform(patch("/task/status/{id}", taskId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(Status.PROGRESS.toString()))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -225,5 +295,12 @@ public class TaskControllerTest {
                         personDetails.getPerson().getId(), taskDTO.getPriority(), taskDTO.getStatus()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[:1].id").exists());
+    }
+
+    @Test
+    @DirtiesContext
+    public void unauthorizedAccessTest() throws Exception {
+        mockMvc.perform(get("/task"))
+                .andExpect(status().is3xxRedirection());
     }
 }
